@@ -1,0 +1,337 @@
+@import "tailwindcss";
+
+/* ───────────────── Design tokens (Mira variable-star system) ───────────────── */
+:root {
+  --space: #000000;
+  --ink: #f4f1ec;
+  --muted: rgba(244, 241, 236, 0.6);
+  --dim: rgba(244, 241, 236, 0.38);
+  --hairline: rgba(255, 255, 255, 0.14);
+  --ember: #ff5b2e;
+  --paper: #f2eee7;
+  --paper-ink: #0a0a0a;
+  --ease-film: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --gutter: clamp(1rem, 3.2vw, 3rem);
+}
+
+@theme inline {
+  --color-space: var(--space);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-dim: var(--dim);
+  --color-hairline: var(--hairline);
+  --color-ember: var(--ember);
+  --color-paper: var(--paper);
+  --color-paper-ink: var(--paper-ink);
+  --font-display: var(--font-display-face);
+  --font-sans: var(--font-reading-face);
+  --font-mono: var(--font-mono-face);
+  --ease-film: var(--ease-film);
+  --ease-out-soft: var(--ease-out);
+}
+
+/* ───────────────── Base ───────────────── */
+html {
+  background: var(--space);
+  color-scheme: dark;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+body {
+  background: var(--space);
+  color: var(--ink);
+  font-family: var(--font-reading-face), ui-sans-serif, sans-serif;
+  letter-spacing: -0.02em;
+  overflow-x: clip; /* clip (not hidden) keeps position: sticky working */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--ember);
+  color: #000;
+}
+
+:focus-visible {
+  outline: 1px solid var(--ember);
+  outline-offset: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.has-cursor,
+  html.has-cursor a,
+  html.has-cursor button {
+    cursor: none;
+  }
+}
+
+/* ───────────────── Type ───────────────── */
+.t-display {
+  font-family: var(--font-display-face), sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.t-hero {
+  font-size: clamp(1.9rem, 5.4vw, 6rem);
+}
+
+.t-section {
+  font-size: clamp(1.6rem, 4.2vw, 4.6rem);
+}
+
+.t-statement {
+  font-size: clamp(1.6rem, 3.6vw, 3.6rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+
+.t-label {
+  font-family: var(--font-mono-face), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.t-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244, 241, 236, 0.45);
+}
+
+/* Line mask: each line sits inside overflow hidden; inner moves up. */
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.mask-line > span {
+  display: block;
+  will-change: transform;
+}
+
+/* ───────────────── UI primitives ───────────────── */
+.pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  height: 2.6rem;
+  padding: 0 1.35rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition: border-color 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out),
+    background-color 0.5s var(--ease-out);
+}
+.pill:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 0 18px rgba(255, 91, 46, 0.22);
+}
+.pill--solid {
+  background: var(--ink);
+  color: #000;
+  border-color: var(--ink);
+}
+.pill--solid:hover {
+  background: #fff;
+  box-shadow: none;
+}
+.pill--dark {
+  border-color: rgba(10, 10, 10, 0.35);
+  color: var(--paper-ink);
+  background: transparent;
+}
+
+/* Text roll: two copies of the label stacked, swap on hover. */
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.2;
+}
+.roll > span {
+  display: block;
+  transition: transform 0.6s var(--ease-film);
+}
+.roll > span + span {
+  position: absolute;
+  inset: 0;
+  transform: translateY(105%);
+}
+a:hover .roll > span:first-child,
+button:hover .roll > span:first-child {
+  transform: translateY(-105%);
+}
+a:hover .roll > span + span,
+button:hover .roll > span + span {
+  transform: translateY(0);
+}
+
+.circle-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color 0.5s var(--ease-out), background-color 0.5s var(--ease-out);
+}
+.circle-btn:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.link-line {
+  position: relative;
+  display: inline-block;
+}
+.link-line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.6s var(--ease-film);
+}
+.link-line:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.field {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--hairline);
+  padding: 0.9rem 0;
+  font-size: 1.05rem;
+  color: var(--ink);
+  border-radius: 0;
+  transition: border-color 0.4s var(--ease-out);
+}
+.field::placeholder {
+  color: var(--dim);
+}
+.field:focus {
+  outline: none;
+  border-bottom-color: var(--ember);
+}
+
+.chip {
+  height: 2.25rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  font-size: 13px;
+  color: var(--muted);
+  transition: all 0.4s var(--ease-out);
+}
+.chip:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: var(--ink);
+}
+.chip[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #000;
+}
+
+/* ───────────────── Scene plates ───────────────── */
+.plate {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform, opacity;
+  mix-blend-mode: screen; /* black in the plate contributes nothing */
+}
+.plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+
+.float-obj {
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+/* ───────────────── Grain ───────────────── */
+.grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 90;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.9s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-6%, 4%); }
+  40% { transform: translate(4%, -8%); }
+  60% { transform: translate(-3%, 7%); }
+  80% { transform: translate(7%, 2%); }
+  100% { transform: translate(-2%, -4%); }
+}
+
+/* Preloader failsafe: if JavaScript never runs, the loader still gets out of the way. */
+.preloader {
+  animation: preloader-failsafe 0.6s 8s forwards;
+}
+@keyframes preloader-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Marquee row */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
